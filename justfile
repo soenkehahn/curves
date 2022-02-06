@@ -2,11 +2,8 @@ ci: setup
   yarn run tsc
   yarn run jest --forceExit
 
-setup: && svg-to-typescript
+setup:
   yarn
-
-svg-to-typescript:
-  yarn run svgr --typescript src/svgs/*.svg --out-dir src/svgs/
 
 bundle: setup
   rm public -rf
@@ -16,7 +13,7 @@ bundle: setup
     --dist-dir public \
     --public-url https://soenkehahn.github.io/tree-game/
 
-serve: svg-to-typescript
+serve:
   yarn run parcel src/index.html
 
 watch-tsc:
@@ -27,3 +24,11 @@ watch-tests *args:
 
 render-graph:
   dot -Tpdf graph.dot > graph.pdf
+
+lint:
+  yarn eslint src --max-warnings=0
+  cd tests && yarn prettier src --check
+
+lint-fix:
+  yarn eslint src --fix --max-warnings=0
+  yarn prettier src --write
