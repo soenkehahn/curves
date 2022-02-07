@@ -64,7 +64,16 @@ export const App = () => {
 
   return (
     <>
-      <Chart history={appState.history} />
+      <Chart
+        f={(state: State) => state.position}
+        history={appState.history}
+        stroke="#00f"
+      />
+      <Chart
+        f={(state: State) => state.velocity}
+        history={appState.history}
+        stroke="#f00"
+      />
       {(["UP", "LEVEL", "DOWN"] as Array<Button>).map((b: Button) => (
         <div key={b}>
           <button
@@ -79,11 +88,15 @@ export const App = () => {
   );
 };
 
-function Chart(props: { history: History<Sample> }) {
-  const { data, ticks } = calculateLineChart(props.history);
+function Chart(props: {
+  f: (state: State) => number;
+  history: History<Sample>;
+  stroke: string;
+}) {
+  const { data, ticks } = calculateLineChart(props.f, props.history);
   return (
-    <LineChart width={1000} height={800} data={data}>
-      <Line dataKey={"y"} type={"natural"} />
+    <LineChart width={1000} height={400} data={data}>
+      <Line dataKey={"y"} type={"natural"} stroke={props.stroke} />
       <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
       <XAxis
         dataKey={"time"}
@@ -103,7 +116,10 @@ function Chart(props: { history: History<Sample> }) {
   );
 }
 
-function calculateLineChart(history: History<Sample>): {
+function calculateLineChart(
+  f: (state: State) => number,
+  history: History<Sample>
+): {
   data: Array<{ time: number; y: number }>;
   ticks: Array<number>;
 } {
@@ -111,7 +127,7 @@ function calculateLineChart(history: History<Sample>): {
   let maxTime = Number.MIN_VALUE;
   const data = history.get().map((sample: Sample) => {
     const time = sample.time / 1000;
-    const y = sample.state.position;
+    const y = f(sample.state);
     if (time > maxTime) {
       maxTime = time;
     }
