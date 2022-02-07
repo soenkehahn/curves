@@ -1,10 +1,11 @@
-import { History, newHistory } from "./history";
-import { describe, it } from "str";
 import expect from "expect";
+import { describe, it } from "str";
+
+import { History, newHistory } from "./history";
 
 describe("history", () => {
   it("allows to add new samples up to the given length", () => {
-    let history: History<string> = newHistory(3);
+    const history: History<string> = newHistory(3);
     history.append("foo");
     expect(history.get()).toEqual(["foo"]);
     history.append("bar");

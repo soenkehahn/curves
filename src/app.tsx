@@ -1,9 +1,9 @@
-import { CartesianGrid, LineChart, Line, YAxis, XAxis } from "recharts";
 import * as React from "react";
-import { useEffect, useState, useCallback } from "react";
-import { newHistory, History } from "./history";
-import { upPressed, newState, State, update } from "./state";
-import { wait } from "./utils";
+import { useCallback, useEffect, useState } from "react";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+
+import { History, newHistory } from "./history";
+import { newState, State, update, upPressed } from "./state";
 
 type AppState = {
   started: boolean;
@@ -15,7 +15,7 @@ type AppState = {
 type Sample = { time: DOMHighResTimeStamp; state: State };
 
 export const App = () => {
-  let [appState, setAppState] = useState<AppState>(() => {
+  const [appState, setAppState] = useState<AppState>(() => {
     const state = newState();
     const history = newHistory<Sample>(500);
     const now = performance.now();
@@ -119,7 +119,7 @@ function calculateLineChart(history: History<Sample>): {
   minTime = Math.ceil(minTime);
   maxTime = Math.floor(maxTime);
   let tick = minTime;
-  let ticks: Array<number> = [];
+  const ticks: Array<number> = [];
   while (tick <= maxTime) {
     ticks.push(tick);
     tick++;

@@ -1,6 +1,7 @@
-import { newState, update, upPressed } from "./state";
-import { describe, it } from "str";
 import expect from "expect";
+import { describe, it } from "str";
+
+import { newState, update, upPressed } from "./state";
 
 function step(message: string) {
   console.log(`STEP: ${message}`);
