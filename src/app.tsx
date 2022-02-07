@@ -11,6 +11,12 @@ import {
   State,
   update,
 } from "./state";
+import { wait } from "./utils";
+
+const config = {
+  historySize: 500,
+  tickDelay: null,
+};
 
 type AppState = {
   started: boolean;
@@ -24,7 +30,7 @@ type Sample = { time: DOMHighResTimeStamp; state: State };
 export const App = () => {
   const [appState, setAppState] = useState<AppState>(() => {
     const state = newState(0.5);
-    const history = newHistory<Sample>(500);
+    const history = newHistory<Sample>(config.historySize);
     const now = performance.now();
     history.append({ time: now, state });
     return {
@@ -46,7 +52,7 @@ export const App = () => {
   };
 
   const tick = useCallback(
-    (now: DOMHighResTimeStamp) => {
+    async (now: DOMHighResTimeStamp) => {
       setAppState((appState: AppState) => {
         const timeDelta = now - appState.time;
         const newState = update(timeDelta / 1000, appState.state);
@@ -58,6 +64,9 @@ export const App = () => {
           history: appState.history,
         };
       });
+      if (config.tickDelay) {
+        await wait(config.tickDelay);
+      }
       window.requestAnimationFrame(tick);
     },
     [setAppState]
@@ -118,7 +127,12 @@ function Chart(props: {
   return (
     <LineChart width={1000} height={400} data={data}>
       <CartesianGrid stroke="#ccc" />
-      <Line dataKey={"y"} type={"natural"} stroke={props.stroke} />
+      <Line
+        dataKey={"y"}
+        stroke={props.stroke}
+        isAnimationActive={false}
+        dot={false}
+      />
       <XAxis
         dataKey={"time"}
         hide={true}
