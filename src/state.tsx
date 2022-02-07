@@ -1,5 +1,3 @@
-import { exhaustivenessCheck } from "./utils";
-
 export type State = {
   position: number;
   velocity: number;
@@ -27,26 +25,19 @@ export function update(timeDelta: number, state: State): State {
 
 export type Button = "UP" | "DOWN";
 
-export const allButtons: Array<Button> = ["UP", "DOWN"];
-
-export function buttonDown(state: State, button: Button): State {
-  let force = 0;
-  switch (button) {
-    case "UP": {
-      force = state.forceConstant;
-      break;
-    }
-    case "DOWN": {
-      force = -state.forceConstant;
-      break;
-    }
-    default:
-      exhaustivenessCheck(button);
-  }
-  return {
+export const buttonDown =
+  (button: Button) =>
+  (state: State): State => ({
     ...state,
-    force,
-  };
-}
+    force: state.force + forceChange(button, state),
+  });
 
-export const buttonRelease = (state: State): State => ({ ...state, force: 0 });
+export const buttonRelease =
+  (button: Button) =>
+  (state: State): State => ({
+    ...state,
+    force: state.force - forceChange(button, state),
+  });
+
+const forceChange = (b: Button, s: State): number =>
+  b === "UP" ? s.forceConstant : -s.forceConstant;

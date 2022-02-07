@@ -1,10 +1,9 @@
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 import { History, newHistory } from "./history";
 import {
-  allButtons,
   Button,
   buttonDown,
   buttonRelease,
@@ -70,29 +69,39 @@ export const App = () => {
     }
   }, [appState]);
 
+  const handleVelocityMouseEvent = (event: MouseEvent) => {
+    let button: null | Button = null;
+    if (event.button === 0) {
+      button = "UP";
+    } else if (event.button === 2) {
+      button = "DOWN";
+    }
+    if (button) {
+      if (event.type === "mousedown") {
+        updateState(buttonDown(button));
+      } else if (event.type === "mouseup") {
+        updateState(buttonRelease(button));
+      }
+    }
+  };
+
   return (
     <>
+      <div
+        onMouseDown={handleVelocityMouseEvent}
+        onMouseUp={handleVelocityMouseEvent}
+      >
+        <Chart
+          f={(state: State) => state.velocity}
+          history={appState.history}
+          stroke="#f00"
+        />
+      </div>
       <Chart
         f={(state: State) => state.position}
         history={appState.history}
         stroke="#00f"
       />
-      <Chart
-        f={(state: State) => state.velocity}
-        history={appState.history}
-        stroke="#f00"
-      />
-      {allButtons.map((b: Button) => (
-        <div key={b}>
-          <button
-            onMouseDown={() => updateState((state) => buttonDown(state, b))}
-            onMouseUp={() => updateState((state) => buttonRelease(state))}
-          >
-            {b}
-          </button>
-          <br />
-        </div>
-      ))}
     </>
   );
 };
