@@ -22,17 +22,15 @@ type AppState = {
   started: boolean;
   time: DOMHighResTimeStamp;
   state: State;
-  history: History<Sample>;
+  history: History<State>;
 };
-
-type Sample = { time: DOMHighResTimeStamp; state: State };
 
 export const App = () => {
   const [appState, setAppState] = useState<AppState>(() => {
     const state = newState(0.5);
-    const history = newHistory<Sample>(config.historySize);
+    const history = newHistory<State>(config.historySize);
     const now = performance.now();
-    history.append({ time: now, state });
+    history.push({ time: now, state });
     return {
       started: false,
       time: now,
@@ -56,7 +54,7 @@ export const App = () => {
       setAppState((appState: AppState) => {
         const timeDelta = now - appState.time;
         const newState = update(timeDelta / 1000, appState.state);
-        appState.history.append({ time: now, state: newState });
+        appState.history.push({ time: now, state: newState });
         return {
           started: true,
           time: now,
@@ -117,7 +115,7 @@ export const App = () => {
 
 function Chart(props: {
   f: (state: State) => number;
-  history: History<Sample>;
+  history: History<State>;
   stroke: string;
 }) {
   const { data, timeTicks, yTicks } = calculateLineChart(
@@ -153,38 +151,40 @@ function Chart(props: {
   );
 }
 
-function calculateLineChart(
-  f: (state: State) => number,
-  history: History<Sample>
+export function calculateLineChart<T>(
+  f: (state: T) => number,
+  history: History<T>
 ): {
   data: Array<{ time: number; y: number }>;
   timeTicks: Array<number>;
   yTicks: Array<number>;
 } {
-  let minTime = Number.MAX_VALUE;
-  let maxTime = Number.MIN_VALUE;
-  let minY = Number.MAX_VALUE;
-  let maxY = Number.MIN_VALUE;
-  const data = history.get().map((sample: Sample) => {
-    const time = sample.time / 1000;
-    const y = f(sample.state);
-    if (time > maxTime) {
-      maxTime = time;
-    }
-    if (time < minTime) {
-      minTime = time;
-    }
-    if (y > maxY) {
-      maxY = y;
-    }
-    if (y < minY) {
-      minY = y;
-    }
-    return {
-      time,
-      y,
-    };
-  });
+  let minTime = Number.MAX_SAFE_INTEGER;
+  let maxTime = Number.MIN_SAFE_INTEGER;
+  let minY = Number.MAX_SAFE_INTEGER;
+  let maxY = Number.MIN_SAFE_INTEGER;
+  const data = history
+    .get()
+    .map((sample: { time: DOMHighResTimeStamp; state: T }) => {
+      const time = sample.time / 1000;
+      const y = f(sample.state);
+      if (time > maxTime) {
+        maxTime = time;
+      }
+      if (time < minTime) {
+        minTime = time;
+      }
+      if (y > maxY) {
+        maxY = y;
+      }
+      if (y < minY) {
+        minY = y;
+      }
+      return {
+        time,
+        y,
+      };
+    });
   return {
     data,
     timeTicks: calculateTicks(minTime, maxTime),
