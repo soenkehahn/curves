@@ -11,7 +11,6 @@ export function newState(): State {
 }
 
 export function update(timeDelta: number, state: State): State {
-  console.log(JSON.stringify(state));
   return {
     ...state,
     position: state.position + timeDelta * state.velocity,
