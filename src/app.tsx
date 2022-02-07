@@ -2,7 +2,7 @@ import { CartesianGrid, LineChart, Line, YAxis, XAxis } from "recharts";
 import * as React from "react";
 import { useEffect, useState, useCallback } from "react";
 import { newHistory, History } from "./history";
-import { newState, State, update } from "./state";
+import { upPressed, newState, State, update } from "./state";
 import { wait } from "./utils";
 
 type AppState = {
@@ -28,6 +28,16 @@ export const App = () => {
     };
   });
 
+  const updateState = (update: (state: State) => State): void => {
+    setAppState((appState) => {
+      const newState = update(appState.state);
+      return {
+        ...appState,
+        state: newState,
+      };
+    });
+  };
+
   const tick = useCallback(
     (now: DOMHighResTimeStamp) => {
       setAppState((appState: AppState) => {
@@ -52,11 +62,18 @@ export const App = () => {
     }
   }, [appState]);
 
-  return <Game history={appState.history} />;
+  return (
+    <>
+      <Chart history={appState.history} />
+      <button onClick={() => updateState((state) => upPressed(state))}>
+        UP
+      </button>
+    </>
+  );
 };
 
-const Game = ({ history }: { history: History<Sample> }) => {
-  const { data, ticks } = calculateLineChart(history);
+function Chart(props: { history: History<Sample> }) {
+  const { data, ticks } = calculateLineChart(props.history);
   return (
     <LineChart width={1000} height={800} data={data}>
       <Line dataKey={"y"} type={"natural"} />
@@ -77,7 +94,7 @@ const Game = ({ history }: { history: History<Sample> }) => {
       />
     </LineChart>
   );
-};
+}
 
 function calculateLineChart(history: History<Sample>): {
   data: Array<{ time: number; y: number }>;
