@@ -10,7 +10,7 @@ function step(message: string) {
 describe("state updates", () => {
   it("updates according to a given force", () => {
     step("Doesn't move when force is 0");
-    let state = newState();
+    let state = newState(1);
     state.position = 1;
     state.velocity = 0;
     state.force = 0;
@@ -30,15 +30,15 @@ describe("state updates", () => {
 
 it("reacts to ui interactions", () => {
   step("no interaction");
-  let state = newState();
+  let state = newState(0.7);
   expect(state.force).toEqual(0);
   step("when UP is pressed");
   state = buttonPressed(state, "UP");
-  expect(state.force).toEqual(1);
+  expect(state.force).toEqual(0.7);
   step("when LEVEL is pressed");
   state = buttonPressed(state, "LEVEL");
   expect(state.force).toEqual(0);
   step("when DOWN is pressed");
   state = buttonPressed(state, "DOWN");
-  expect(state.force).toEqual(-1);
+  expect(state.force).toEqual(-0.7);
 });

@@ -4,13 +4,15 @@ export type State = {
   position: number;
   velocity: number;
   force: number;
+  forceConstant: number;
 };
 
-export function newState(): State {
+export function newState(forceConstant: number): State {
   return {
     position: 0,
     velocity: 0,
     force: 0,
+    forceConstant,
   };
 }
 
@@ -29,7 +31,7 @@ export function buttonPressed(state: State, button: Button): State {
   let force = 0;
   switch (button) {
     case "UP": {
-      force = 1;
+      force = state.forceConstant;
       break;
     }
     case "LEVEL": {
@@ -37,7 +39,7 @@ export function buttonPressed(state: State, button: Button): State {
       break;
     }
     case "DOWN": {
-      force = -1;
+      force = -state.forceConstant;
       break;
     }
     default:
