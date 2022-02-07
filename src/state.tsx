@@ -25,17 +25,15 @@ export function update(timeDelta: number, state: State): State {
   };
 }
 
-export type Button = "UP" | "LEVEL" | "DOWN";
+export type Button = "UP" | "DOWN";
 
-export function buttonPressed(state: State, button: Button): State {
+export const allButtons: Array<Button> = ["UP", "DOWN"];
+
+export function buttonDown(state: State, button: Button): State {
   let force = 0;
   switch (button) {
     case "UP": {
       force = state.forceConstant;
-      break;
-    }
-    case "LEVEL": {
-      force = 0;
       break;
     }
     case "DOWN": {
@@ -50,3 +48,5 @@ export function buttonPressed(state: State, button: Button): State {
     force,
   };
 }
+
+export const buttonRelease = (state: State): State => ({ ...state, force: 0 });

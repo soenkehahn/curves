@@ -3,7 +3,15 @@ import { useCallback, useEffect, useState } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 import { History, newHistory } from "./history";
-import { Button, buttonPressed, newState, State, update } from "./state";
+import {
+  allButtons,
+  Button,
+  buttonDown,
+  buttonRelease,
+  newState,
+  State,
+  update,
+} from "./state";
 
 type AppState = {
   started: boolean;
@@ -16,7 +24,7 @@ type Sample = { time: DOMHighResTimeStamp; state: State };
 
 export const App = () => {
   const [appState, setAppState] = useState<AppState>(() => {
-    const state = newState(0.05);
+    const state = newState(0.5);
     const history = newHistory<Sample>(500);
     const now = performance.now();
     history.append({ time: now, state });
@@ -74,10 +82,11 @@ export const App = () => {
         history={appState.history}
         stroke="#f00"
       />
-      {(["UP", "LEVEL", "DOWN"] as Array<Button>).map((b: Button) => (
+      {allButtons.map((b: Button) => (
         <div key={b}>
           <button
-            onClick={() => updateState((state) => buttonPressed(state, b))}
+            onMouseDown={() => updateState((state) => buttonDown(state, b))}
+            onMouseUp={() => updateState((state) => buttonRelease(state))}
           >
             {b}
           </button>
@@ -160,7 +169,7 @@ function calculateLineChart(
   };
 }
 
-function calculateTicks(min: number, max: number): Array<number> {
+export function calculateTicks(min: number, max: number): Array<number> {
   min = Math.ceil(min);
   max = Math.floor(max);
   let tick = min;
