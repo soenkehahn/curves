@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 import { History, newHistory } from "./history";
-import { newState, State, update, upPressed } from "./state";
+import { Button, buttonPressed, newState, State, update } from "./state";
 
 type AppState = {
   started: boolean;
@@ -65,9 +65,16 @@ export const App = () => {
   return (
     <>
       <Chart history={appState.history} />
-      <button onClick={() => updateState((state) => upPressed(state))}>
-        UP
-      </button>
+      {(["UP", "LEVEL", "DOWN"] as Array<Button>).map((b: Button) => (
+        <div key={b}>
+          <button
+            onClick={() => updateState((state) => buttonPressed(state, b))}
+          >
+            {b}
+          </button>
+          <br />
+        </div>
+      ))}
     </>
   );
 };

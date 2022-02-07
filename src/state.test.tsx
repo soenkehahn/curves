@@ -1,7 +1,7 @@
 import expect from "expect";
 import { describe, it } from "str";
 
-import { newState, update, upPressed } from "./state";
+import { buttonPressed, newState, update } from "./state";
 
 function step(message: string) {
   console.log(`STEP: ${message}`);
@@ -33,6 +33,12 @@ it("reacts to ui interactions", () => {
   let state = newState();
   expect(state.force).toEqual(0);
   step("when UP is pressed");
-  state = upPressed(state);
+  state = buttonPressed(state, "UP");
   expect(state.force).toEqual(1);
+  step("when LEVEL is pressed");
+  state = buttonPressed(state, "LEVEL");
+  expect(state.force).toEqual(0);
+  step("when DOWN is pressed");
+  state = buttonPressed(state, "DOWN");
+  expect(state.force).toEqual(-1);
 });

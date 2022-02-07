@@ -1,3 +1,5 @@
+import { exhaustivenessCheck } from "./utils";
+
 export type State = {
   position: number;
   velocity: number;
@@ -21,9 +23,28 @@ export function update(timeDelta: number, state: State): State {
   };
 }
 
-export function upPressed(state: State): State {
+export type Button = "UP" | "LEVEL" | "DOWN";
+
+export function buttonPressed(state: State, button: Button): State {
+  let force = 0;
+  switch (button) {
+    case "UP": {
+      force = 1;
+      break;
+    }
+    case "LEVEL": {
+      force = 0;
+      break;
+    }
+    case "DOWN": {
+      force = -1;
+      break;
+    }
+    default:
+      exhaustivenessCheck(button);
+  }
   return {
     ...state,
-    force: 1,
+    force,
   };
 }

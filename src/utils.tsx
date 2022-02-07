@@ -12,3 +12,6 @@ export function assert(condition: boolean) {
     throw `assertion failed`;
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function exhaustivenessCheck(param: never) {}
