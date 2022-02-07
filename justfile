@@ -19,8 +19,10 @@ serve:
 watch-tsc:
   yarn run tsc --watch
 
-watch-tests *args:
-  yarn run jest --watch --forceExit {{args}}
+test *args:
+  #!/usr/bin/env bash
+
+  str src/*.test.tsx {{ args }}
 
 render-graph:
   dot -Tpdf graph.dot > graph.pdf

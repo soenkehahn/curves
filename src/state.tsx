@@ -1,9 +1,19 @@
-export type State = { time: DOMHighResTimeStamp };
+export type State = {
+  position: number;
+  velocity: number;
+};
 
 export function newState(): State {
-  return { time: 0 };
+  return {
+    position: 0,
+    velocity: 1,
+  };
 }
 
 export function update(timeDelta: number, state: State): State {
-  return { time: state.time + timeDelta };
+  console.log(JSON.stringify(state));
+  return {
+    ...state,
+    position: state.position + timeDelta * state.velocity,
+  };
 }

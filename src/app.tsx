@@ -40,5 +40,5 @@ export const App = () => {
 };
 
 const Game = ({ state }: { state: State }) => {
-  return <div>time: {JSON.stringify(state.time / 1000)}</div>;
+  return <div>time: {JSON.stringify(state.position / 1000)}</div>;
 };
