@@ -1,7 +1,7 @@
 import expect from "expect";
 import { describe, it } from "str";
 
-import { calculateTicks, calculateLineChart } from "./app";
+import { calculateLineChart, calculateTicks } from "./app";
 import { newHistory } from "./history";
 
 describe("calculateTicks", () => {
