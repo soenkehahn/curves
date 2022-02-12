@@ -11,15 +11,8 @@ import {
 
 import { Grid } from "./grid";
 import { History, newHistory } from "./history";
-import {
-  Button,
-  buttonDown,
-  buttonRelease,
-  newState,
-  State,
-  update,
-} from "./state";
-import { wait } from "./utils";
+import { Button, handleButton, newState, State, update } from "./state";
+import { exhaustivenessCheck, wait } from "./utils";
 
 const config = {
   historySize: 500,
@@ -35,7 +28,7 @@ type AppState = {
 
 export const App = () => {
   const [appState, setAppState] = useState<AppState>(() => {
-    const state = newState({ forceConstant: 0.5, resources: 10 });
+    const state = newState({ woodForceConstant: 0.5 });
     const history = newHistory<State>(config.historySize);
     const now = performance.now();
     history.push({ time: now, state });
@@ -84,47 +77,33 @@ export const App = () => {
     }
   }, [appState]);
 
-  const handleVelocityMouseEvent = (event: MouseEvent) => {
-    let button: null | Button = null;
-    if (event.button === 0) {
-      button = "UP";
-    } else if (event.button === 2) {
-      button = "DOWN";
-    }
-    if (button) {
-      if (event.type === "mousedown") {
-        updateState(buttonDown(button));
-      } else if (event.type === "mouseup") {
-        updateState(buttonRelease(button));
-      }
-    }
-  };
-
   return (
     <Grid columns={2}>
-      <div
-        onMouseDown={handleVelocityMouseEvent}
-        onMouseUp={handleVelocityMouseEvent}
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        <Chart
-          f={(state: State) => state.velocity}
-          history={appState.history}
-          stroke="#f00"
-        />
-      </div>
       <Chart
-        f={(state: State) => state.resources}
+        f={(state: State) => state.wood.velocity}
         history={appState.history}
-        stroke="#0f0"
+        stroke="#f00"
+        updateState={updateState}
+        value="wood"
       />
       <Chart
-        f={(state: State) => state.position}
+        f={(state: State) => state.wood.position}
         history={appState.history}
         stroke="#00f"
+        updateState={updateState}
+      />
+      <Chart
+        f={(state: State) => state.building.velocity}
+        history={appState.history}
+        stroke="#0f0"
+        updateState={updateState}
+        value="building"
+      />
+      <Chart
+        f={(state: State) => state.building.position}
+        history={appState.history}
+        stroke="#ff0"
+        updateState={updateState}
       />
     </Grid>
   );
@@ -134,40 +113,76 @@ function Chart(props: {
   f: (state: State) => number;
   history: History<State>;
   stroke: string;
+  updateState: (update: (state: State) => State) => void;
+  value?: "wood" | "building";
 }) {
+  const handleVelocityMouseEvent =
+    (value: "wood" | "building") =>
+    (event: MouseEvent): void => {
+      let button: null | Button = null;
+      if (event.button === 0) {
+        button = "UP";
+      } else if (event.button === 2) {
+        button = "DOWN";
+      }
+      if (button) {
+        if (event.type === "mousedown") {
+          props.updateState(handleButton(button, "press", value));
+        } else if (event.type === "mouseup") {
+          props.updateState(handleButton(button, "release", value));
+        }
+      }
+    };
+  let mouseHandlers = {};
+  if (props.value != null) {
+    mouseHandlers = {
+      onMouseDown: handleVelocityMouseEvent(props.value),
+      onMouseUp: handleVelocityMouseEvent(props.value),
+    };
+  }
+
   const { data, timeTicks, yTicks } = calculateLineChart(
     props.f,
     props.history
   );
+
   return (
-    <ResponsiveContainer height="100%" width="100%">
-      <LineChart data={data}>
-        <CartesianGrid stroke="#ccc" />
-        <Line
-          dataKey={"y"}
-          stroke={props.stroke}
-          isAnimationActive={false}
-          dot={false}
-          strokeWidth={2}
-        />
-        <XAxis
-          dataKey={"time"}
-          hide={true}
-          type={"number"}
-          domain={["dataMin", "dataMax"]}
-          ticks={timeTicks}
-          interval={0}
-        />
-        <YAxis
-          dataKey={"y"}
-          hide={true}
-          type={"number"}
-          domain={["dataMin", "dataMax"]}
-          ticks={yTicks}
-          interval={0}
-        />
-      </LineChart>
-    </ResponsiveContainer>
+    <div
+      {...mouseHandlers}
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
+    >
+      <ResponsiveContainer height="100%" width="100%">
+        <LineChart data={data}>
+          <CartesianGrid stroke="#ccc" />
+          <Line
+            dataKey={"y"}
+            stroke={props.stroke}
+            isAnimationActive={false}
+            dot={false}
+            strokeWidth={2}
+          />
+          <XAxis
+            dataKey={"time"}
+            hide={true}
+            type={"number"}
+            domain={["dataMin", "dataMax"]}
+            ticks={timeTicks}
+            interval={0}
+          />
+          <YAxis
+            dataKey={"y"}
+            hide={true}
+            type={"number"}
+            domain={["dataMin", "dataMax"]}
+            ticks={yTicks}
+            interval={0}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
 

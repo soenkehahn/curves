@@ -22,7 +22,7 @@ watch-tsc:
 test *args:
   #!/usr/bin/env bash
 
-  str src/*.test.tsx {{ args }}
+  str src/*.test.tsx src/*.test.ts {{ args }}
 
 render-graph:
   dot -Tpdf graph.dot > graph.pdf
