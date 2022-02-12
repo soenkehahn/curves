@@ -148,6 +148,7 @@ function Chart(props: {
           stroke={props.stroke}
           isAnimationActive={false}
           dot={false}
+          strokeWidth={2}
         />
         <XAxis
           dataKey={"time"}
