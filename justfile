@@ -25,7 +25,7 @@ test *args:
 
 lint:
   yarn eslint src --max-warnings=0
-  cd tests && yarn prettier src --check
+  yarn prettier src --check
 
 lint-fix:
   yarn eslint src --fix --max-warnings=0
