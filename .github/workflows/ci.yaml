@@ -29,8 +29,9 @@ jobs:
 
       - name: Install str
         run: |
+          cd ..
           pwd
-          bark
+          echo starting
           git clone https://github.com/soenkehahn/str.git
           just str/install
           just str/typescript-library-bundle
