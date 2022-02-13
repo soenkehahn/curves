@@ -1,6 +1,5 @@
-ci: setup
+ci: setup && test lint
   yarn run tsc
-  yarn run jest --forceExit
 
 setup:
   yarn
@@ -11,7 +10,7 @@ bundle: setup
     build src/index.html \
     --no-source-maps \
     --dist-dir public \
-    --public-url https://soenkehahn.github.io/tree-game/
+    --public-url https://soenkehahn.github.io/curves/
 
 serve: setup
   yarn run parcel src/index.html
@@ -24,12 +23,9 @@ test *args:
 
   str src/*.test.tsx src/*.test.ts {{ args }}
 
-render-graph:
-  dot -Tpdf graph.dot > graph.pdf
-
 lint:
   yarn eslint src --max-warnings=0
-  cd tests && yarn prettier src --check
+  yarn prettier src --check
 
 lint-fix:
   yarn eslint src --fix --max-warnings=0

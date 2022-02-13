@@ -22,6 +22,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.17
+
+      - name: Install str
+        run: |
+          cd ..
+          git clone https://github.com/soenkehahn/str.git
+          just str/install
+          just str/typescript-library-bundle
+
       - uses: actions/checkout@v2
 
       - name: Ci
