@@ -13,7 +13,7 @@ import { Grid } from "./grid";
 import { History, newHistory } from "./history";
 import { Button, handleButton, newState, State, update } from "./state";
 import * as state from "./state";
-import { exhaustivenessCheck, wait } from "./utils";
+import { wait } from "./utils";
 
 const config = {
   historySize: 500,

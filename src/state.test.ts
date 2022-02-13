@@ -2,7 +2,6 @@ import expect from "expect";
 import { describe, it, test } from "str";
 
 import { handleButton as handleButton, newState, update } from "./state";
-import { debug } from "./utils";
 
 function step(message: string) {
   console.log(`STEP: ${message}`);
@@ -92,7 +91,7 @@ describe("state updates", () => {
     expect(state.building.position).toEqual(4);
   });
 
-  it("lets building grow as much as wood", () => {
+  it("lets building grow when wood is zero, but growing", () => {
     let state = newState({});
     state.wood.velocity = 3;
     state.building.velocity = 4;
