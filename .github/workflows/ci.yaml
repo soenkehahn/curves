@@ -24,6 +24,12 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      - name: Install str
+        run: |
+          git clone https://github.com/soenkehahn/str.git
+          just str/install
+          yarn add link:str/typescript-library
+
       - name: Ci
         run: just ci
 
