@@ -223,7 +223,7 @@ export function calculateLineChart<T>(
   return {
     data,
     timeTicks: calculateTicks(minTime, maxTime),
-    yTicks: calculateTicks(minY, maxY),
+    yTicks: calculateTicks(Math.min(0, minY), Math.max(0, maxY)),
   };
 }
 

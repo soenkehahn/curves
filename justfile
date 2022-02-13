@@ -13,7 +13,7 @@ bundle: setup
     --dist-dir public \
     --public-url https://soenkehahn.github.io/tree-game/
 
-serve:
+serve: setup
   yarn run parcel src/index.html
 
 watch-tsc:

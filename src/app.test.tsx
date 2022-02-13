@@ -28,7 +28,7 @@ describe("calculateLineChart", () => {
         history.push({ time: performance.now(), state: n });
       }
       expect(calculateLineChart((x: number) => x, history).yTicks).toEqual([
-        4, 5, 6,
+        0, 1, 2, 3, 4, 5, 6,
       ]);
     });
 
@@ -38,7 +38,7 @@ describe("calculateLineChart", () => {
         history.push({ time: performance.now(), state: n });
       }
       expect(calculateLineChart((x: number) => x, history).yTicks).toEqual([
-        -5, -4, -3,
+        -5, -4, -3, -2, -1, 0,
       ]);
     });
   });
