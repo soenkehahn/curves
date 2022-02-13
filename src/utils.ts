@@ -16,6 +16,8 @@ export function assert(condition: boolean) {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function exhaustivenessCheck(param: never) {}
 
-export const debug = <T>(t: T): void => {
-  console.log(JSON.stringify(t, null, 2));
+export const debug = (...args: Array<unknown>): void => {
+  for (const arg of args) {
+    console.log(JSON.stringify(arg, null, 2));
+  }
 };

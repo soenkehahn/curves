@@ -1,5 +1,5 @@
 import expect from "expect";
-import { describe, it } from "str";
+import { describe, it, test } from "str";
 
 import { handleButton as handleButton, newState, update } from "./state";
 import { debug } from "./utils";
@@ -99,5 +99,26 @@ describe("state updates", () => {
     state = update(1, state);
     expect(state.wood.position).toEqual(0);
     expect(state.building.position).toEqual(3);
+  });
+
+  test("maximum of wood and building mining is a constant", () => {
+    let state = newState({ maxMining: 7 });
+    state.wood.position = 100;
+    state.building.position = 100;
+    state.wood.velocity = 4;
+    state.building.velocity = 3;
+    state = handleButton("UP", "press", "building")(state);
+    state = update(1, state);
+    state = handleButton("UP", "release", "building")(state);
+    expect(state.building.velocity).toEqual(4);
+    expect(state.wood.velocity).toEqual(3);
+    step("adjusts velocity before calculating position");
+    expect(state.wood.position).toEqual(99);
+    expect(state.building.position).toEqual(104);
+    step("allows to ramp up wood while decreasing building");
+    state = handleButton("UP", "press", "wood")(state);
+    state = update(1, state);
+    expect(state.wood.velocity).toEqual(4);
+    expect(state.building.velocity).toEqual(3);
   });
 });

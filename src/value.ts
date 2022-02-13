@@ -15,13 +15,16 @@ export const initialValue = (forceConstant: number): Value => ({
   forceConstant,
 });
 
-export const update = (timeDelta: number, value: Value): Value => {
+export const updateVelocity = (timeDelta: number, value: Value): Value => {
   const velocity = Math.max(0, value.velocity + timeDelta * value.force);
-  const positionChange = timeDelta * velocity;
+  return { ...value, velocity };
+};
+
+export const updatePosition = (timeDelta: number, value: Value): Value => {
+  const positionChange = timeDelta * value.velocity;
   return {
     ...value,
     position: value.position + positionChange,
-    velocity,
   };
 };
 

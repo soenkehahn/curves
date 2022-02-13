@@ -12,6 +12,7 @@ import {
 import { Grid } from "./grid";
 import { History, newHistory } from "./history";
 import { Button, handleButton, newState, State, update } from "./state";
+import * as state from "./state";
 import { exhaustivenessCheck, wait } from "./utils";
 
 const config = {
@@ -26,9 +27,15 @@ type AppState = {
   history: History<State>;
 };
 
+const stateConfig: state.Config = {
+  woodForceConstant: 0.5,
+  buildingForceConstant: 1,
+  maxMining: 4,
+};
+
 export const App = () => {
   const [appState, setAppState] = useState<AppState>(() => {
-    const state = newState({ woodForceConstant: 0.5 });
+    const state = newState(stateConfig);
     const history = newHistory<State>(config.historySize);
     const now = performance.now();
     history.push({ time: now, state });
