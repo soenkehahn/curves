@@ -22,8 +22,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/checkout@v2
-
       - name: Install go
         uses: actions/setup-go@v1
         with:
@@ -31,14 +29,19 @@ jobs:
 
       - name: Install str
         run: |
+          pwd
+          bark
           git clone https://github.com/soenkehahn/str.git
           just str/install
           just str/typescript-library-bundle
-          yarn remove str
-          yarn add link:str/typescript-library
+
+      - uses: actions/checkout@v2
 
       - name: Ci
-        run: just ci
+        run: |
+          yarn remove str
+          yarn add link:str/typescript-library
+          just ci
 
       - name: Bundle
         run: just bundle
