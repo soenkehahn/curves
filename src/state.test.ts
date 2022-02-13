@@ -83,11 +83,11 @@ describe("state updates", () => {
   });
 
   it("lets building grow as much as wood", () => {
-    let state = newState({});
-    state.wood.velocity = 5;
+    let state = newState({ buildingCost: 3 });
+    state.wood.velocity = 15;
     state.building.velocity = 4;
     state = update(1, state);
-    expect(state.wood.position).toEqual(1);
+    expect(state.wood.position).toEqual(3);
     expect(state.building.position).toEqual(4);
   });
 

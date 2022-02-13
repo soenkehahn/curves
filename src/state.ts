@@ -9,12 +9,14 @@ type AllOptional<T> = {
 export type Config = {
   woodForceConstant: number;
   buildingForceConstant: number;
+  buildingCost: number;
   maxMining: number;
 };
 
 const defaultConfig: Config = {
   woodForceConstant: 1,
   buildingForceConstant: 1,
+  buildingCost: 1,
   maxMining: Number.MAX_SAFE_INTEGER,
 };
 
@@ -22,6 +24,7 @@ export type State = {
   wood: Value;
   building: Value;
   config: {
+    buildingCost: number;
     maxMining: number;
   };
 };
@@ -50,9 +53,10 @@ export function update(timeDelta: number, old: State): State {
   building = v.updatePosition(timeDelta, building);
   building.position = Math.min(
     building.position,
-    old.building.position + wood.position
+    old.building.position + wood.position / old.config.buildingCost
   );
-  wood.position -= building.position - old.building.position;
+  wood.position -=
+    (building.position - old.building.position) * old.config.buildingCost;
   wood.position = Math.max(wood.position, 0);
   return { ...old, wood, building };
 }

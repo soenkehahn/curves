@@ -30,6 +30,7 @@ type AppState = {
 const stateConfig: state.Config = {
   woodForceConstant: 0.5,
   buildingForceConstant: 1,
+  buildingCost: 3,
   maxMining: 4,
 };
 
