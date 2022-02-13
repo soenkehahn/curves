@@ -33,6 +33,7 @@ jobs:
         run: |
           git clone https://github.com/soenkehahn/str.git
           just str/install
+          just str/typescript-library-bundle
           yarn add link:str/typescript-library
 
       - name: Ci
