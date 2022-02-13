@@ -34,6 +34,7 @@ jobs:
           git clone https://github.com/soenkehahn/str.git
           just str/install
           just str/typescript-library-bundle
+          yarn remove str
           yarn add link:str/typescript-library
 
       - name: Ci
