@@ -30,8 +30,6 @@ jobs:
       - name: Install str
         run: |
           cd ..
-          pwd
-          echo starting
           git clone https://github.com/soenkehahn/str.git
           just str/install
           just str/typescript-library-bundle
@@ -39,10 +37,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Ci
-        run: |
-          yarn remove str
-          yarn add link:str/typescript-library
-          just ci
+        run: just ci
 
       - name: Bundle
         run: just bundle
